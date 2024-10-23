@@ -180,10 +180,6 @@ class DECA(nn.Module):
             'landmarks2d': landmarks2d,
             'landmarks3d': landmarks3d,
             'landmarks3d_world': landmarks3d_world,
-            'shape': codedict['shape'],
-            'exp': codedict['exp'],
-            'pose': codedict['pose'],
-            'is_valid': True
         }
 
         ## rendering

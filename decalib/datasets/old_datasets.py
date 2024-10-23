@@ -100,7 +100,6 @@ class TestData(Dataset):
         if len(image.shape) == 3 and image.shape[2] > 3:
             image = image[:,:,:3]
 
-        is_valid = True
         h, w, _ = image.shape
         if self.iscrop:
             # provide kpt as txt file, or mat file (for AFLW2000)
@@ -121,7 +120,6 @@ class TestData(Dataset):
                 if len(bbox) < 4:
                     print('no face detected! run original image')
                     left = 0; right = h-1; top=0; bottom=w-1
-                    is_valid = False
                 else:
                     left = bbox[0]; right=bbox[2]
                     top = bbox[1]; bottom=bbox[3]
@@ -142,5 +140,4 @@ class TestData(Dataset):
                 'imagename': imagename,
                 'tform': torch.tensor(tform.params).float(),
                 'original_image': torch.tensor(image.transpose(2,0,1)).float(),
-                'is_valid': is_valid
                 }

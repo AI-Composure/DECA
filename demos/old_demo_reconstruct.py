@@ -28,7 +28,6 @@ from decalib.datasets import datasets
 from decalib.utils import util
 from decalib.utils.config import cfg as deca_cfg
 from decalib.utils.tensor_cropper import transform_points
-import json
 
 def main(args):
     # if args.rasterizer_type != 'standard':
@@ -87,9 +86,6 @@ def main(args):
                 if args.render_orig:
                     image = util.tensor2image(orig_visdict[vis_name][0])
                     cv2.imwrite(os.path.join(savefolder, name, 'orig_' + name + '_' + vis_name +'.jpg'), util.tensor2image(orig_visdict[vis_name][0]))
-        
-        with open(os.path.join(savefolder, name + '.json'), 'w') as f:
-            json.dump({'shape': opdict['shape'].cpu().numpy().tolist(), 'exp': opdict['exp'].cpu().numpy().tolist(), 'pose': opdict['pose'].cpu().numpy().tolist(), 'is_valid': testdata[i]['is_valid']}, f)
     print(f'-- please check the results in {savefolder}')
         
 if __name__ == '__main__':
