@@ -46,7 +46,7 @@ def video2sequence(video_path, sample_step=10):
     return imagepath_list
 
 class TestData(Dataset):
-    def __init__(self, testpath, iscrop=True, crop_size=224, scale=1.25, face_detector='fan', sample_step=10):
+    def __init__(self, testpath, iscrop=True, crop_size=224, scale=1.25, face_detector='fan', sample_step=10, resize_before_crop=False, resize_scale=0.6):
         '''
             testpath: folder, imagepath_list, image path, video path
         '''
@@ -67,6 +67,8 @@ class TestData(Dataset):
         self.scale = scale
         self.iscrop = iscrop
         self.resolution_inp = crop_size
+        self.resize_before_crop = resize_before_crop
+        self.resize_scale = resize_scale
         if face_detector == 'fan':
             self.face_detector = detectors.FAN()
         # elif face_detector == 'mtcnn':
@@ -94,11 +96,13 @@ class TestData(Dataset):
     def __getitem__(self, index):
         imagepath = self.imagepath_list[index]
         imagename = os.path.splitext(os.path.split(imagepath)[-1])[0]
-        image = np.array(imread(imagepath))
+        image = np.array(imread(imagepath)) # shape [h, w, c]
+        if self.resize_before_crop:
+            image = resize(image, (int(image.shape[0]*self.resize_scale), int(image.shape[1]*self.resize_scale)), preserve_range=True) # shape [h, w, c]
         if len(image.shape) == 2:
-            image = image[:,:,None].repeat(1,1,3)
+            image = image[:,:,None].repeat(1,1,3) # gray to rgb
         if len(image.shape) == 3 and image.shape[2] > 3:
-            image = image[:,:,:3]
+            image = image[:,:,:3] # remove alpha channel
 
         is_valid = True
         h, w, _ = image.shape

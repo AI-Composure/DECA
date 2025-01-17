@@ -36,9 +36,9 @@ def main(args):
     savefolder = args.savefolder
     device = args.device
     os.makedirs(savefolder, exist_ok=True)
-
+    
     # load test images 
-    testdata = datasets.TestData(args.inputpath, iscrop=args.iscrop, face_detector=args.detector, sample_step=args.sample_step)
+    testdata = datasets.TestData(args.inputpath, iscrop=args.iscrop, face_detector=args.detector, sample_step=args.sample_step, resize_before_crop=args.resize_before_crop, resize_scale=args.resize_scale)
 
     # run DECA
     deca_cfg.model.use_tex = args.useTex
@@ -102,6 +102,10 @@ if __name__ == '__main__':
     parser.add_argument('--device', default='cuda', type=str,
                         help='set device, cpu for using cpu' )
     # process test images
+    parser.add_argument('--resize_before_crop', default=False, type=lambda x: x.lower() in ['true', '1'],
+                        help='whether to resize input image before cropping' )
+    parser.add_argument('--resize_scale', default=0.6, type=float,
+                        help='resize scale for input image' )
     parser.add_argument('--iscrop', default=True, type=lambda x: x.lower() in ['true', '1'],
                         help='whether to crop input image, set false only when the test image are well cropped' )
     parser.add_argument('--sample_step', default=10, type=int,
